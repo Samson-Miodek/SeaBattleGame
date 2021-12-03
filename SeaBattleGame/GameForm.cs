@@ -12,7 +12,10 @@ namespace SeaBattleGame
 	    private Timer timer;
         private bool IsMousePressed;
         private SolidBrush darkRed = new SolidBrush(Color.DarkRed);
-
+        private SolidBrush whiteColor = new SolidBrush(Color.White);
+        private Font font = new Font("Arial", 24);
+        private PointF leftPosition;
+        private PointF rightPosition;
         protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
@@ -21,6 +24,9 @@ namespace SeaBattleGame
 			
 			WindowWidth = ClientSize.Width;
 			WindowHeight = ClientSize.Height;
+			
+			leftPosition = new PointF(WindowWidth / 4 * 0.8f, WindowHeight * 0.01f);
+			rightPosition = new PointF(WindowWidth / 2 * 1.4f, WindowHeight * 0.01f);
 			
 			DoubleBuffered = true;
 			BackColor = Color.Black;
@@ -38,14 +44,25 @@ namespace SeaBattleGame
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.HighQuality;
             Text = string.Format("Ходит игрок {0}", GameController.CurrentPlayerId+1);
-            
-            if(GameController.CurrentPlayerId == 0 && Mouse.position.X > WindowWidth/2)	
-				GameView.DrawEllipse(g,darkRed,Mouse.position);
-            if(GameController.CurrentPlayerId == 1 && Mouse.position.X < WindowWidth/2)	
-	            GameView.DrawEllipse(g,darkRed,Mouse.position);
-            
+
+			
             GameView.DrawCurrentPlayer(g);
             GameView.DrawGrid(g);
+
+            if (GameController.CurrentPlayerId == 0)
+            {
+	            g.DrawString("Моё поле", font,whiteColor,leftPosition);
+	            g.DrawString("Поле противника", font,whiteColor,rightPosition);
+	            if(Mouse.position.X > WindowWidth / 2)
+					GameView.DrawEllipse(g,darkRed,Mouse.position);
+            }
+
+            if(GameController.CurrentPlayerId == 1){
+	            g.DrawString("Поле противника", font,whiteColor,leftPosition);
+	            g.DrawString("Моё поле", font,whiteColor,rightPosition);
+	            if(Mouse.position.X < WindowWidth/2)
+		            GameView.DrawEllipse(g,darkRed,Mouse.position);
+            }
         }
 		
 		protected override void OnMouseClick(MouseEventArgs e)
