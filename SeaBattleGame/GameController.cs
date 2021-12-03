@@ -70,24 +70,29 @@ namespace SeaBattleGame
             if(CurrentPlayerId == 1 && Mouse.position.X > GameForm.WindowWidth/2
             || CurrentPlayerId == 0 && Mouse.position.X < GameForm.WindowWidth/2)	
                 return;
-            
-            foreach (var playerId in players.Keys)
+
+            var anotherPlayerId = (currentPlayerId + 1) % 2;
+            var anotherPlayer = players[anotherPlayerId];
+            for(var ind = 0; ind < anotherPlayer.Ships.Count; ind++)
             {
-                if(playerId == CurrentPlayerId)
-                    continue;
-                
-                foreach (var ship in players[playerId].Ships)
-                    for (var i = 0; i < ship.cellCoordinates.Count; i++)
+                var ship = anotherPlayer.Ships[ind];
+
+                for (var i = 0; i < ship.cellCoordinates.Count; i++)
+                {
+                    var distance = (ship.cellCoordinates[i] - Mouse.position).Length();
+                    if (distance < Ship.diameter)
                     {
-                        var distance = (ship.cellCoordinates[i] - Mouse.position).Length();
-                        if (distance < Ship.diameter)
-                        {
-                            AddWreckedShip(ship.cellCoordinates[i], new SolidBrush(Color.Red));
-                            ship.cellCoordinates.RemoveAt(i);
-                            return;
-                        }
+                        AddWreckedShip(ship.cellCoordinates[i], new SolidBrush(Color.Red));
+                        ship.cellCoordinates.RemoveAt(i);
+                        if (ship.cellCoordinates.Count == 0)
+                            anotherPlayer.Ships.Remove(ship);
+                        return;
                     }
+                }
+                if (ship.cellCoordinates.Count == 0)
+                    anotherPlayer.Ships.Remove(ship);
             }
+            
 
             AddWreckedShip(Mouse.position,new SolidBrush(Color.Gray));
             currentPlayerId++;

@@ -58,13 +58,16 @@ namespace SeaBattleGame
         
         public static void DrawTextInfo(Graphics g)
         {
+            var countShips1 = GameController.Players[GameController.CurrentPlayerId].Ships.Count;
+            var countShips2 = GameController.Players[(GameController.CurrentPlayerId+1)%2].Ships.Count;
+
             if (GameController.CurrentPlayerId == 0)
             {
-                g.DrawString("Моё поле", font,whiteColor,leftPosition);
-                g.DrawString("Поле противника", font,whiteColor,rightPosition);
+                g.DrawString(string.Format("Моё поле {0}",countShips1), font,whiteColor,leftPosition);
+                g.DrawString(string.Format("Поле противника {0}",countShips2), font,whiteColor,rightPosition);
             }else if(GameController.CurrentPlayerId == 1){
-                g.DrawString("Поле противника", font,whiteColor,leftPosition);
-                g.DrawString("Моё поле", font,whiteColor,rightPosition);
+                g.DrawString(string.Format("Поле противника {0}",countShips2), font,whiteColor,leftPosition);
+                g.DrawString(string.Format("Моё поле {0}",countShips1), font,whiteColor,rightPosition);
             }
         }
     }
