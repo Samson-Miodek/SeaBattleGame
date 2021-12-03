@@ -67,6 +67,10 @@ namespace SeaBattleGame
 
         public static void CurrentPlayersAttack()
         {
+            if(CurrentPlayerId == 1 && Mouse.position.X > GameForm.WindowWidth/2
+            || CurrentPlayerId == 0 && Mouse.position.X < GameForm.WindowWidth/2)	
+                return;
+            
             foreach (var playerId in players.Keys)
             {
                 if(playerId == CurrentPlayerId)

@@ -6,7 +6,12 @@ namespace SeaBattleGame
 {
     public static class GameView
     {
-        private static SolidBrush redColor = new SolidBrush(Color.Red);
+        private static SolidBrush darkRed = new SolidBrush(Color.DarkRed);
+        private static SolidBrush whiteColor = new SolidBrush(Color.White);
+        private static Font font = new Font("Arial", 24);
+        public static PointF leftPosition;
+        public static PointF rightPosition;
+        
         public struct DividingLine
         {
             public static Pen pen = new Pen(Color.DimGray);
@@ -41,6 +46,26 @@ namespace SeaBattleGame
             var h = Math.Round(GameForm.WindowHeight / Ship.diameter)*Ship.diameter;
             for (var y = Ship.radius; y < h; y+=(int)Ship.diameter)
                 g.DrawLine(DividingLine.pen,new Point(0,y),new Point(GameForm.WindowWidth,y));
+        }
+
+        public static void DrawMousePosition(Graphics g)
+        {
+            if (GameController.CurrentPlayerId == 0 && Mouse.position.X > GameForm.WindowWidth / 2)
+                DrawEllipse(g,darkRed,Mouse.position);
+            else if (GameController.CurrentPlayerId == 1 && Mouse.position.X < GameForm.WindowWidth/2)
+                DrawEllipse(g,darkRed,Mouse.position);
+        }
+        
+        public static void DrawTextInfo(Graphics g)
+        {
+            if (GameController.CurrentPlayerId == 0)
+            {
+                g.DrawString("Моё поле", font,whiteColor,leftPosition);
+                g.DrawString("Поле противника", font,whiteColor,rightPosition);
+            }else if(GameController.CurrentPlayerId == 1){
+                g.DrawString("Поле противника", font,whiteColor,leftPosition);
+                g.DrawString("Моё поле", font,whiteColor,rightPosition);
+            }
         }
     }
 }
