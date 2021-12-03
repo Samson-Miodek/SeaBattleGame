@@ -11,32 +11,9 @@ namespace SeaBattleGame
 	    public static int WindowHeight;
 	    private Timer timer;
         private bool IsMousePressed;
-        private SolidBrush darkRed = new SolidBrush(Color.FromArgb(255, 115, 0, 0));
+        private SolidBrush darkRed = new SolidBrush(Color.DarkRed);
 
-        public struct DividingLine
-        {
-	        public static Pen pen = new Pen(Color.DimGray);
-	        public static Point p1 = new Point(WindowWidth / 2, 0);
-	        public static Point p2 = new Point(WindowWidth/ 2, WindowHeight);
-        }
-		    
-        public GameForm()
-        {
-            InitializeComponent();
-        }
-
-        protected override void OnResize(EventArgs e)
-		{
-			base.OnResize(e);
-			WindowWidth = ClientSize.Width;
-			WindowHeight = ClientSize.Height;
-
-			DividingLine.p1 = new Point(WindowWidth / 2, 0);
-			DividingLine.p2 = new Point(WindowWidth / 2, WindowHeight);
-		}
-
-        
-		protected override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
 			TopMost = true;
@@ -52,7 +29,7 @@ namespace SeaBattleGame
 			timer.Tick += TimerOnTick;
 			timer.Start();
 			
-			GameController.Init();
+			GameController.Initialization();
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -60,25 +37,31 @@ namespace SeaBattleGame
             base.OnPaint(e);
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.HighQuality;
-			
-            Text = string.Format("Ходит игрок под id ({0})", GameController.CurrentPlayerId);
-			
-            g.DrawLine(DividingLine.pen,DividingLine.p1,DividingLine.p2);
-            GameView.DrawEllipse(g,darkRed,Mouse.position);
+            Text = string.Format("Ходит игрок {0}", GameController.CurrentPlayerId+1);
+            
+            if(GameController.CurrentPlayerId == 0 && Mouse.position.X > WindowWidth/2)	
+				GameView.DrawEllipse(g,darkRed,Mouse.position);
+            if(GameController.CurrentPlayerId == 1 && Mouse.position.X < WindowWidth/2)	
+	            GameView.DrawEllipse(g,darkRed,Mouse.position);
+            
             GameView.DrawCurrentPlayer(g);
             GameView.DrawGrid(g);
         }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-			Mouse.UpdPosition(e.X,e.Y);
-		}
-
+		
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			GameController.CurrentPlayersAttack();
+			
+			if(GameController.CurrentPlayerId == 0 && Mouse.position.X > WindowWidth/2)	
+				GameController.CurrentPlayersAttack();
+			if(GameController.CurrentPlayerId == 1 && Mouse.position.X < WindowWidth/2)	
+				GameController.CurrentPlayersAttack();
+		}
+		
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+			Mouse.UpdPosition(e.X,e.Y);
 		}
 		
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -97,6 +80,14 @@ namespace SeaBattleGame
 		{
 			Invalidate();
 		}
+		public GameForm()
+		{
+			InitializeComponent();
+		}
 
+		protected override void OnResize(EventArgs e)
+		{
+			base.OnResize(e);
+		}
     }
 }

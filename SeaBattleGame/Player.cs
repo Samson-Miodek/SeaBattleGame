@@ -6,6 +6,6 @@ namespace SeaBattleGame
     public class Player
     {
         public List<Ship> Ships;
-        public List<Vector2> CoordinatesWreckedShips;
+        public List<Ship> WreckedShips;
     }
-}
+}   

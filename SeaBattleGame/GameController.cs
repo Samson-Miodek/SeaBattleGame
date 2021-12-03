@@ -20,7 +20,7 @@ namespace SeaBattleGame
             get { return currentPlayerId; }
         }
 
-        public static void Init()
+        public static void Initialization()
         {
             currentPlayerId = 0;
             players = new Dictionary<int, Player>();
@@ -28,34 +28,38 @@ namespace SeaBattleGame
             players.Add(0,new Player());
             players.Add(1,new Player());
 
-            players[0].Ships = GetShips(0, 150);
-            players[1].Ships = GetShips( GameForm.WindowWidth / 2,250);
+            var color1 = new SolidBrush(Color.LightGreen);
+            var color2 = new SolidBrush(Color.Blue);
+;            
+            players[0].Ships = GetShips(0,color1);
+            players[1].Ships = GetShips( GameForm.WindowWidth / 2,color2);
 
-            players[0].CoordinatesWreckedShips = new List<Vector2>();
-            players[1].CoordinatesWreckedShips = new List<Vector2>();
+            players[0].WreckedShips = new List<Ship>();
+            players[1].WreckedShips = new List<Ship>();
         }
 
-        private static List<Ship> GetShips(float offsetX,int clr)
+        private static List<Ship> GetShips(float offsetX, SolidBrush color)
         {
             var ships = new List<Ship>(numberShips);
             var random = new Random();
-            var color = new SolidBrush(Color.FromArgb(255,clr,255,clr));
-            for (int i = 0; i < numberShips; i++)
+            var w = GameForm.WindowWidth / 2;
+            var h = GameForm.WindowHeight;
+            
+            for (var i = 0; i < numberShips; i++)
             {
-                var w = GameForm.WindowWidth / 2;
-                var h = GameForm.WindowHeight;
+                var angle = (random.Next(5))*Math.PI /2;
+                var numberCells = random.Next(4) + 3;
                 
-                var X = w * random.NextDouble();
-                var Y = h * random.NextDouble();
+                var posX = w * random.NextDouble();
+                var posY = h * random.NextDouble();
                 
-                var x = Math.Round(X/Ship.diameter)*Ship.diameter;
-                var y = Math.Round(Y/Ship.diameter)*Ship.diameter;
+                var x = Math.Round(posX/Ship.diameter)*Ship.diameter;
+                var y = Math.Round(posY/Ship.diameter)*Ship.diameter;
                 
                 var startPosition = new Vector2((float)x, (float)y);
                 startPosition.X += offsetX;
                 
-                var angle = (random.Next(5))*Math.PI /2;
-                ships.Add(new Ship(startPosition,random.Next(4)+3,angle,color));
+                ships.Add(new Ship(startPosition,numberCells,angle,color));
             }
 
             return ships;
@@ -63,27 +67,35 @@ namespace SeaBattleGame
 
         public static void CurrentPlayersAttack()
         {
-            var currentPlayer = players[CurrentPlayerId];
-
             foreach (var playerId in players.Keys)
             {
                 if(playerId == CurrentPlayerId)
                     continue;
                 
                 foreach (var ship in players[playerId].Ships)
-                    for (int i = 0; i < ship.position.Count; i++)
+                    for (var i = 0; i < ship.cellCoordinates.Count; i++)
                     {
-                        var distance = (ship.position[i] - Mouse.position).Length();
+                        var distance = (ship.cellCoordinates[i] - Mouse.position).Length();
                         if (distance < Ship.diameter)
                         {
-                            currentPlayer.CoordinatesWreckedShips.Add(ship.position[i]);
-                            ship.position.RemoveAt(i);
+                            AddWreckedShip(ship.cellCoordinates[i], new SolidBrush(Color.Red));
+                            ship.cellCoordinates.RemoveAt(i);
                             return;
                         }
                     }
             }
+
+            AddWreckedShip(Mouse.position,new SolidBrush(Color.Gray));
             currentPlayerId++;
             currentPlayerId %= players.Count;
+        }
+
+        private static void AddWreckedShip(Vector2 position, SolidBrush color)
+        {
+            var WreckedShip = new Ship();
+            WreckedShip.cellCoordinates.Add(position);
+            WreckedShip.color = color;
+            players[currentPlayerId].WreckedShips.Add(WreckedShip);
         }
     }
 }

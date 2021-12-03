@@ -9,20 +9,26 @@ namespace SeaBattleGame
     {
         public static int radius = 10;
         public static float diameter = radius*2;
-        
-        public List<Vector2> position;
+
         public SolidBrush color;
-        public Ship(Vector2 startPosition, int length, double angle, SolidBrush color)
+        public List<Vector2> cellCoordinates;
+
+        public Ship()
+        {
+            this.cellCoordinates = new List<Vector2>();
+        }
+
+        public Ship(Vector2 startPosition, int numberCells, double angle, SolidBrush color)
         {
             this.color = color;
-            this.position = new List<Vector2>(length);
+            this.cellCoordinates = new List<Vector2>(numberCells);
 
             var delta = new Vector2(diameter * (float)Math.Cos(angle), diameter * (float)Math.Sin(angle));
 
-            position.Add(startPosition);
+            cellCoordinates.Add(startPosition);
 
-            for (int i = 1; i < length; i++)
-                position.Add(position[i - 1] + delta);
+            for (int i = 1; i < numberCells; i++)
+                cellCoordinates.Add(cellCoordinates[i - 1] + delta);
         }
     }
 }
