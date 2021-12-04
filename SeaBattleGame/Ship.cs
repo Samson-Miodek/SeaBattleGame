@@ -13,8 +13,10 @@ namespace SeaBattleGame
         public SolidBrush color;
         public List<Vector2> cellCoordinates = new List<Vector2>();
 
-        public Ship()
+        public Ship(Vector2 position,SolidBrush color)
         {
+            cellCoordinates.Add(position);
+            this.color = color;
         }
 
         public Ship(Vector2 startPosition, int numberCells, double angle, SolidBrush color)

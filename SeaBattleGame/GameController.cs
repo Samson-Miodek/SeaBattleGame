@@ -7,7 +7,7 @@ namespace SeaBattleGame
 {
     public static  class GameController
     {
-        private static int numberShips = 45;
+        private static int numberShips = 15;
         private static int currentPlayerId = 0;
         private static Dictionary<int, Player> players;
         
@@ -65,25 +65,30 @@ namespace SeaBattleGame
             return ships;
         }
 
+        private static bool CanCurrentPlayerAttack()
+        {
+            return CurrentPlayerId == 1 && Mouse.position.X < GameForm.WindowWidth / 2
+                || CurrentPlayerId == 0 && Mouse.position.X > GameForm.WindowWidth / 2;
+        }
+
         public static void CurrentPlayersAttack()
         {
-            if(CurrentPlayerId == 1 && Mouse.position.X > GameForm.WindowWidth/2
-            || CurrentPlayerId == 0 && Mouse.position.X < GameForm.WindowWidth/2)	
+            if(!CanCurrentPlayerAttack())	
                 return;
 
-            var anotherPlayerId = (currentPlayerId + 1) % 2;
-            var anotherPlayer = players[anotherPlayerId];
-            for(var ind = 0; ind < anotherPlayer.Ships.Count; ind++)
+            var anotherPlayer = players[(currentPlayerId + 1) % 2];
+            
+            for(var shipIndex = 0; shipIndex < anotherPlayer.Ships.Count; shipIndex++)
             {
-                var ship = anotherPlayer.Ships[ind];
+                var ship = anotherPlayer.Ships[shipIndex];
 
-                for (var i = 0; i < ship.cellCoordinates.Count; i++)
+                for (var coordinateIndex = 0; coordinateIndex < ship.cellCoordinates.Count; coordinateIndex++)
                 {
-                    var distance = (ship.cellCoordinates[i] - Mouse.position).Length();
+                    var distance = (ship.cellCoordinates[coordinateIndex] - Mouse.position).Length();
                     if (distance < Ship.diameter)
                     {
-                        AddWreckedShip(ship.cellCoordinates[i], new SolidBrush(Color.Red));
-                        ship.cellCoordinates.RemoveAt(i);
+                        AddWreckedShip(ship.cellCoordinates[coordinateIndex], new SolidBrush(Color.Red));
+                        ship.cellCoordinates.RemoveAt(coordinateIndex);
                         if (ship.cellCoordinates.Count == 0)
                             anotherPlayer.Ships.Remove(ship);
                         return;
@@ -93,7 +98,6 @@ namespace SeaBattleGame
                     anotherPlayer.Ships.Remove(ship);
             }
             
-
             AddWreckedShip(Mouse.position,new SolidBrush(Color.Gray));
             currentPlayerId++;
             currentPlayerId %= players.Count;
@@ -101,10 +105,7 @@ namespace SeaBattleGame
 
         private static void AddWreckedShip(Vector2 position, SolidBrush color)
         {
-            var WreckedShip = new Ship();
-            WreckedShip.cellCoordinates.Add(position);
-            WreckedShip.color = color;
-            players[currentPlayerId].WreckedShips.Add(WreckedShip);
+            players[currentPlayerId].WreckedShips.Add(new Ship(position,color));
         }
     }
 }
