@@ -77,6 +77,7 @@ namespace SeaBattleGame
                 return;
 
             var anotherPlayer = players[(currentPlayerId + 1) % 2];
+            var isHit = false;
             
             for(var shipIndex = 0; shipIndex < anotherPlayer.Ships.Count; shipIndex++)
             {
@@ -91,16 +92,19 @@ namespace SeaBattleGame
                         ship.cellCoordinates.RemoveAt(coordinateIndex);
                         if (ship.cellCoordinates.Count == 0)
                             anotherPlayer.Ships.Remove(ship);
-                        return;
+                        isHit = true;
                     }
                 }
                 if (ship.cellCoordinates.Count == 0)
                     anotherPlayer.Ships.Remove(ship);
             }
-            
-            AddWreckedShip(Mouse.position,new SolidBrush(Color.Gray));
-            currentPlayerId++;
-            currentPlayerId %= players.Count;
+
+            if (!isHit)
+            {
+                AddWreckedShip(Mouse.position,new SolidBrush(Color.Gray));
+                currentPlayerId++;
+                currentPlayerId %= players.Count;
+            }
         }
 
         private static void AddWreckedShip(Vector2 position, SolidBrush color)
