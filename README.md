@@ -1,2 +1,2 @@
-# SeaBattleGame4
+# SeaBattleGame
 Прототип игры "Морской бой" сделанный по фану
