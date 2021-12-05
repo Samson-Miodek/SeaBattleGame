@@ -41,9 +41,9 @@ namespace SeaBattleGame
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.HighQuality;
 
+            GameView.DrawGrid(g);
             GameView.DrawMousePosition(g);
             GameView.DrawCurrentPlayer(g);
-            GameView.DrawGrid(g);
             GameView.DrawTextInfo(g);
         }
 		

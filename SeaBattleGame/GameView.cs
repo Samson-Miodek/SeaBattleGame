@@ -20,19 +20,26 @@ namespace SeaBattleGame
         }
         public static void DrawEllipse(Graphics g, SolidBrush color, Vector2 point)
         {
-            g.FillEllipse(color,point.X-Ship.radius,point.Y-Ship.radius,2 * Ship.radius,2 * Ship.radius); 
+            g.FillEllipse(color,point.X-Ship.radius,point.Y-Ship.radius,Ship.diameter,Ship.diameter); 
         }
+
+        public static void DrawRectangle(Graphics g,SolidBrush color, Vector2 point)
+        {
+            g.FillRectangle(color,point.X-Ship.radius,point.Y-Ship.radius,Ship.diameter,Ship.diameter);
+            g.DrawRectangle(Pens.Black, point.X-Ship.radius,point.Y-Ship.radius,Ship.diameter,Ship.diameter);
+        }
+        
         public static void DrawCurrentPlayer(Graphics g)
         {
             var currentPlayer =  GameController.Players[GameController.CurrentPlayerId];
 
             foreach (var ship in currentPlayer.Ships)
                 foreach (var position in ship.cellCoordinates)
-                    DrawEllipse(g, ship.color, position);
+                    DrawRectangle(g, ship.color, position);
 
             foreach (var ship in currentPlayer.WreckedShips)
                 foreach (var position in ship.cellCoordinates)
-                    DrawEllipse(g, ship.color, position);
+                    DrawRectangle(g, ship.color, position);
         }
 
         public static void DrawGrid(Graphics g)
