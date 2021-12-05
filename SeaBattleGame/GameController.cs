@@ -29,7 +29,7 @@ namespace SeaBattleGame
             players.Add(1,new Player());
 
             var color1 = new SolidBrush(Color.LightGreen);
-            var color2 = new SolidBrush(Color.Blue);
+            var color2 = new SolidBrush(Color.DodgerBlue);
 ;            
             players[0].Ships = GetShips(0,color1);
             players[1].Ships = GetShips( GameForm.WindowWidth / 2,color2);
