@@ -10,16 +10,16 @@ namespace SeaBattleGame
         public static int radius = 10;
         public static float diameter = radius*2;
 
-        public SolidBrush color;
+        public Brush color;
         public List<Vector2> cellCoordinates = new List<Vector2>();
 
-        public Ship(Vector2 position,SolidBrush color)
+        public Ship(Vector2 position,Brush color)
         {
             cellCoordinates.Add(position);
-            this.color = color;
+            this.color = color; 
         }
-
-        public Ship(Vector2 startPosition, int numberCells, double angle, SolidBrush color)
+    
+        public Ship(Vector2 startPosition, int numberCells, double angle, Brush color)
         {
             cellCoordinates.Add(startPosition);
             this.color = color;

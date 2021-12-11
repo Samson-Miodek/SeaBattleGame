@@ -28,17 +28,14 @@ namespace SeaBattleGame
             players.Add(0,new Player());
             players.Add(1,new Player());
 
-            var color1 = new SolidBrush(Color.LightGreen);
-            var color2 = new SolidBrush(Color.DodgerBlue);
-;            
-            players[0].Ships = GetShips(0,color1);
-            players[1].Ships = GetShips( GameForm.WindowWidth / 2,color2);
+            players[0].Ships = GetShips(0,Brushes.LightGreen);
+            players[1].Ships = GetShips( GameForm.WindowWidth / 2,Brushes.DodgerBlue);
 
             players[0].WreckedShips = new List<Ship>();
             players[1].WreckedShips = new List<Ship>();
         }
 
-        private static List<Ship> GetShips(float offsetX, SolidBrush color)
+        private static List<Ship> GetShips(float offsetX, Brush color)
         {
             var ships = new List<Ship>(numberShips);
             var random = new Random();
@@ -88,7 +85,7 @@ namespace SeaBattleGame
                     var distance = (ship.cellCoordinates[coordinateIndex] - Mouse.position).Length();
                     if (distance < Ship.diameter)
                     {
-                        AddWreckedShip(ship.cellCoordinates[coordinateIndex], new SolidBrush(Color.Red));
+                        AddWreckedShip(ship.cellCoordinates[coordinateIndex], Brushes.Red);
                         ship.cellCoordinates.RemoveAt(coordinateIndex);
                         if (ship.cellCoordinates.Count == 0)
                             anotherPlayer.Ships.Remove(ship);
@@ -101,14 +98,14 @@ namespace SeaBattleGame
 
             if (!isHit)
             {
-                AddWreckedShip(Mouse.position,new SolidBrush(Color.Gray));
+                AddWreckedShip(Mouse.position,Brushes.Gray);
                 currentPlayerId++;
                 currentPlayerId %= players.Count;
             }
         }
 
-        private static void AddWreckedShip(Vector2 position, SolidBrush color)
-        {
+        private static void AddWreckedShip(Vector2 position, Brush color)
+        {   
             players[currentPlayerId].WreckedShips.Add(new Ship(position,color));
         }
     }
